@@ -23,7 +23,7 @@ class UrlController {
         message: 'Se ha acortado el link correctamente.',
         data: {
           originalUrl: url,
-          shortUrl: `http://localhost:3000/${shortUrl}`,
+          shortUrl: `http://localhost:3000/api/${shortUrl}`,
         },
       });
     } catch (error) {

@@ -1,2 +1,3 @@
 import  UrlController  from './shortenLink';    
-export {UrlController}
+import redirectController from './rederictLinks';
+export {UrlController, redirectController}

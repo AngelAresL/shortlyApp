@@ -1,4 +1,4 @@
-import handler from "./routes/links";
+import handler from "./routes/redirectLink";
 import { applyMiddlewares } from "./_middlewares";
 import { handleError } from "./middlewares/index";
 import { NextApiRequest, NextApiResponse } from "next";
