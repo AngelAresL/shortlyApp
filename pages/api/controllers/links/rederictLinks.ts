@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { searchUrlByShortCode } from "../../models/links";
 import { generateError } from "../../utils";
+import { logVisit } from "../../models/linkVisists";
 
 class RedirectController {
   public async redirectUrl(
@@ -10,14 +11,22 @@ class RedirectController {
     const { shortUrl } = req.query;
 
     if (typeof shortUrl !== "string") {
-      generateError("Invalid URL", 400);
+      generateError("Url invalida", 400);
     }
 
     try {
-      const originalUrl = await searchUrlByShortCode(shortUrl as string);
+      const originUrl = await searchUrlByShortCode(shortUrl as string);
+      console.log("URL encontrada333:", originUrl);
 
-      if (originalUrl) {
-        res.redirect(originalUrl);
+      if (originUrl) {
+        const linkId = originUrl.id;
+        const visitorIP =
+          req.headers["x-forwarded-for"] || req.socket.remoteAddress;
+        const referrer = req.headers.referer || "";
+        const userAgent = req.headers["user-agent"] || "";
+        await logVisit(linkId, visitorIP as string, referrer, userAgent);
+        res.redirect(originUrl.url);
+      
       } else {
         generateError("URL not found", 404);
       }

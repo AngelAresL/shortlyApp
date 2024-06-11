@@ -22,7 +22,7 @@ class UrlController {
       res.status(201).json({
         message: 'Se ha acortado el link correctamente.',
         data: {
-          originalUrl: url,
+          originUrl: url,
           shortUrl: `http://localhost:3000/api/${shortUrl}`,
         },
       });

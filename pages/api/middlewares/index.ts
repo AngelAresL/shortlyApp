@@ -1,3 +1,3 @@
 import handleError from "./handleError";
-
-export { handleError };
+import rateLimit from "./rateLimit";
+export { handleError, rateLimit };
