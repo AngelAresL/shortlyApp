@@ -1,25 +1,21 @@
-import { RowDataPacket, FieldPacket } from 'mysql2';
-import pool from '../../db/database';
-import { LinkData } from '../../interfaces/LinkData';
-import { generateError } from '../../utils/index';
+import { PrismaClient } from "@prisma/client";
+import { LinkData } from "../../interfaces/LinkData";
+import { generateError } from "../../utils";
+
+const prisma = new PrismaClient();
 
 const searchUrl = async ({ url }: LinkData): Promise<boolean | undefined> => {
   try {
-    const [rows]: [RowDataPacket[], FieldPacket[]] = await pool.execute(
-      `
-            SELECT id FROM links WHERE url=?
-          `,
-      [url]
-    );
+    const link = await prisma.link.findFirst({
+      where: { url },
+      select: { id: true },
+    });
 
-    return rows.length > 0;
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      console.error('Error buscando URL:', error.message);
-    } else {
-      console.error('Error desconocido al buscar URL.');
-    }
-    generateError('Fallo durante el proceso de búsqueda.', 500);
+    return link !== null;
+  } catch (error) {
+    console.error("Error desconocido al buscar URL.");
+
+    generateError("Fallo durante el proceso de búsqueda.", 500);
   }
 };
 

@@ -1,8 +1,11 @@
 "use client";
+
+import { useSession, signOut } from "next-auth/react";
 import { useState } from "react";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
+import Link from "next/link";
 
 const navigation = [
   { name: "Product", href: "#" },
@@ -11,6 +14,7 @@ const navigation = [
 ];
 
 const Header = () => {
+  const { data: session } = useSession();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -22,13 +26,13 @@ const Header = () => {
         <div className="flex flex-1">
           <div className="hidden lg:flex lg:gap-x-12">
             {navigation.map((item) => (
-              <a
+              <Link
                 key={item.name}
                 href={item.href}
                 className="text-sm font-semibold leading-6 text-gray-900"
               >
                 {item.name}
-              </a>
+              </Link>
             ))}
           </div>
           <div className="flex lg:hidden">
@@ -42,7 +46,7 @@ const Header = () => {
             </button>
           </div>
         </div>
-        <a href="/" className="-m-1.5 p-1.5">
+        <Link href="/" className="-m-1.5 p-1.5">
           <span className="sr-only">Your Company</span>
           <Image
             className="h-20 w-auto"
@@ -51,11 +55,30 @@ const Header = () => {
             width={500}
             height={500}
           />
-        </a>
+        </Link>
         <div className="flex flex-1 justify-end">
-          <a href="#" className="text-sm font-semibold leading-6 text-gray-900">
-            Log in <span aria-hidden="true">&rarr;</span>
-          </a>
+          {session ? (
+            <>
+              <span className="text-sm font-semibold leading-6 text-gray-900">
+                {session.user?.name || session.user?.email}
+              </span>
+              <button
+                onClick={() => signOut()}
+                className="ml-4 text-sm font-semibold leading-6 text-gray-900"
+              >
+                Cerrar sesión
+              </button>
+            </>
+          ) : (
+            <div className="flex gap-x-4">
+              <Link href="/login" className="text-sm font-semibold leading-6 text-gray-900">
+                Log in <span aria-hidden="true">&rarr;</span>
+              </Link>
+              <Link href="/register" className="text-sm font-semibold leading-6 text-gray-900">
+                Register <span aria-hidden="true">&rarr;</span>
+              </Link>
+            </div>
+          )}
         </div>
       </nav>
       <Dialog
@@ -76,7 +99,7 @@ const Header = () => {
                 <XMarkIcon className="h-6 w-6" aria-hidden="true" />
               </button>
             </div>
-            <a href="/" className="-m-1.5 p-1.5">
+            <Link href="/" className="-m-1.5 p-1.5">
               <span className="sr-only">Your Company</span>
               <Image
                 className="h-20 w-auto"
@@ -85,25 +108,34 @@ const Header = () => {
                 height={500}
                 alt="Logotipo de la empresa"
               />
-            </a>
+            </Link>
             <div className="flex flex-1 justify-end">
-              <a
-                href="#"
-                className="text-sm font-semibold leading-6 text-gray-900"
-              >
-                Log in <span aria-hidden="true">&rarr;</span>
-              </a>
+              {session ? (
+                <button
+                  onClick={() => signOut()}
+                  className="ml-4 text-sm font-semibold leading-6 text-gray-900"
+                >
+                  Cerrar sesión
+                </button>
+              ) : (
+                <Link
+                  href="/login"
+                  className="text-sm font-semibold leading-6 text-gray-900"
+                >
+                  Log in <span aria-hidden="true">&rarr;</span>
+                </Link>
+              )}
             </div>
           </div>
           <div className="mt-6 space-y-2">
             {navigation.map((item) => (
-              <a
+              <Link
                 key={item.name}
                 href={item.href}
                 className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
               >
                 {item.name}
-              </a>
+              </Link>
             ))}
           </div>
         </DialogPanel>
@@ -111,4 +143,5 @@ const Header = () => {
     </header>
   );
 };
+
 export default Header;

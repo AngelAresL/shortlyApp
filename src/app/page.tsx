@@ -1,6 +1,9 @@
+"use client";
 import HeroSection from "@/components/HeroSection";
 
 const LandingPage = () => {
-  return <HeroSection />;
+  return (
+    <HeroSection/>
+  );
 };
 export default LandingPage;
